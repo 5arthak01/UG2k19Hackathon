@@ -61,11 +61,11 @@ int main()
 	cout<<"Enter the number of entries on each line:"<<endl; fflush(NULL);
 	cin>>k;
 
-	ll *line = new ll[n];
-	ll *linemax = new ll[n];
-	ll *linemin = new ll[n];
+	ll *line = new ll[k];
+	ll *linemax = new ll[k];
+	ll *linemin = new ll[k];
 
-	for(i=0;i<n;i++)
+	for(i=0; i<k; i++)
 	{
 		cout<<"Enter the minimum and maximum for entry "<<(i+1)<<endl; fflush(NULL);
 		cin>>linemin[i]>>linemax[i];
