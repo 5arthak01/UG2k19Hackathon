@@ -21,7 +21,7 @@ int main()
 	//fast I/O
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
-	
+
 	ll t=-1, i=0, numtc=1, j=0, tmax=1, tmin=1;
 	string sl;
 
@@ -104,8 +104,14 @@ int main()
 				cout<<endl;
 			}
 		}
-
 	}
+
+	delete arr;
+	delete arrmin;
+	delete arrmax;
+	delete line;
+	delete linemin;
+	delete linemax;
 
 	return 0;
 }
