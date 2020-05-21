@@ -23,7 +23,7 @@ ll rndm(ll min, ll max)
 int main()
 {
 	//fast I/O
-	//ios_base::sync_with_stdio(false); need stdio for file operations
+	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 
 	ll t=-1, i=0, numtc=1, j=0, tmax=1, tmin=1;
@@ -100,7 +100,8 @@ int main()
 		{
 			t=rndm(tmin, tmax);
 			//append t
-			fprintf(file, "%I64d\n",t);
+			fwrite(&t, sizeof(ll), 1, file);
+			//fprintf(file, "%I64d\n",t);
 			//cout<<t<<endl;
 		}
 		else
@@ -111,7 +112,8 @@ int main()
 			for(i=0;i<n;i++)
 			{
 				arr[i] = rndm(arrmin[i], arrmax[i]);
-				fprintf(file, "%I64d ",arr[i]);
+				fwrite(&arr[i], sizeof(ll), 1, file);
+				//fprintf(file, "%I64d ",arr[i]);
 				//cout<<arr[i]<<" ";
 			}
 			fprintf(file, "\n");
@@ -124,7 +126,8 @@ int main()
 				for(j=0; j<k; j++)
 				{
 					line[i] = rndm(linemin[i], linemax[i]);
-					fprintf(file, "%I64d ",line[i]);
+					fwrite(&line[i], sizeof(ll), 1, file);
+					//fprintf(file, "%I64d ",line[i]);
 					//cout<<line[i]<<" ";
 				}
 				fprintf(file, "\n");
