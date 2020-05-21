@@ -23,7 +23,7 @@ ll rndm(ll min, ll max)
 int main()
 {
 	//fast I/O
-	ios_base::sync_with_stdio(false);
+	//ios_base::sync_with_stdio(false); need stdio for file operations
 	cin.tie(NULL);
 
 	ll t=-1, i=0, numtc=1, j=0, tmax=1, tmin=1;
