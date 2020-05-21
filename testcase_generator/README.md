@@ -1,4 +1,3 @@
-#testcase_generator
 Testcase generator in C++ for OJ questions based on PRNG
 
 Here are some articles for you to get started on some of the reasons behind why it is how it is and what are some of the issues with it:
