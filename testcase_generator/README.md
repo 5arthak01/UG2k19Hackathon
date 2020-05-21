@@ -1,6 +1,3 @@
-# UG2k19Hackathon
-This is the repo for my hackathon team.
-
 Here are some articles for you to get started on some of the reasons behind why it is how it is and what are some of the issues with it:
 > https://stackoverflow.com/questions/7114043/random-number-generation-in-c11-how-to-generate-how-does-it-work 
 
