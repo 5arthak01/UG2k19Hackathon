@@ -1,0 +1,14 @@
+<html>
+<head>
+<title>Upload</title>
+</head>
+<body>
+<h1>Select the appropriate course</h1>
+<form method="POST" action="{{ url_for('formdisp') }}">
+    {{ form.csrf_token }}
+    {{ form.sem }}
+    {{ form.course }}
+    <input type="submit" value="Submit">
+</form>
+</body>
+</html>
