@@ -1,3 +1,4 @@
+#onlu database inclusion is left as far as Upload is concerned
 import os
 from flask import Flask, flash, request, redirect, url_for, render_template, request, jsonify
 from flask_wtf import FlaskForm
@@ -6,7 +7,7 @@ from flask_uploads import UploadSet, configure_uploads, IMAGES, DOCUMENTS, ARCHI
 
 app = Flask(__name__)
 
-folders = UploadSet('folders', IMAGES + ARCHIVES + DOCUMENTS, default_dest=lambda x: 'folders')
+folders = UploadSet('folders', IMAGES + ARCHIVES + DOCUMENTS, default_dest=lambda x: 'storage/misc')
 
 app.config['UPLOAD_FOLDER'] =  './'
 configure_uploads(app, folders)
@@ -25,16 +26,19 @@ def formdisp():
 	form = CourseForm()
 
 	if form.validate_on_submit():
-		
-		filename = folders.save(form.upload_file.data)
+
+		# customise file path in local directory according to the 
+		# data entered
+		file_path = '../'+ str(form.sem.data) + '/' + str(form.course.data)
+
+		#store the file
+		file_name = folders.save(form.upload_file.data, folder=file_path)
 
 		flash("Saved!")
 
-	#customise "folders"
-	#use the form data as path in local storage
-	#do this using form.sem.data
+	else:
+		flash("ERROR")
 
-	#ignore the next line completely please
 	# form.city.choices = [(city.id, city.name) for city in City.query.filter_by(state='CA').all()] 
 	#this is for when we have implemented db
 
