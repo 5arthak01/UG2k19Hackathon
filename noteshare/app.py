@@ -21,6 +21,15 @@ class CourseForm(FlaskForm):
 def formdisp():
 	form = CourseForm()
 
+	if form.validate_on_submit():
+		
+		#use the form data as path in local storage
+		#do this using form.sem.data
+
+
+		return render_template('upload.html', form=form)
+
+
 	#ignore the next line completely please
 	# form.city.choices = [(city.id, city.name) for city in City.query.filter_by(state='CA').all()] 
 	#this is for when we have implemented db
