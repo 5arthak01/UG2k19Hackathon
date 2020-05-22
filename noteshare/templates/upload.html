@@ -1,14 +1,24 @@
-<html>
-<head>
-<title>Upload</title>
-</head>
-<body>
-<h1>Select the appropriate course</h1>
-<form method="POST" action="{{ url_for('formdisp') }}">
-    {{ form.csrf_token }}
-    {{ form.sem }}
-    {{ form.course }}
-    <input type="submit" value="Submit">
-</form>
-</body>
+<!DOCTYPE html>
+<html class="" lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<!-- to make responsive --> 
+
+		<title>Upload</title>
+	</head>
+	<body>
+		<h1>Select the appropriate course</h1>
+		<form method="POST" enctype=multipart/form-data >
+		    {{ form.csrf_token }}
+		    {{ form.sem }}
+		    {{ form.yr }}
+		    {{ form.course }}
+		    {{ form.upload_file }}
+		    <!--input type=file name=files id=files -->
+		    
+		    <input type="submit" value="Submit" >
+		</form>
+	</body>
 </html>
