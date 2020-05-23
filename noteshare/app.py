@@ -54,9 +54,24 @@ def upload():
 
 	return render_template('upload.html', form=form)
 
-@app.route('/browse', methos = ['GET', 'POST'])
+@app.route('/browse', methods = ['GET', 'POST'])
 def browse():
 	pass
+
+
+@app.route('/course/<sem>')
+def course(sem):
+	courses = Courses.query.filter_by(sem_name=sem).all()
+
+	courseArray = []
+
+	for course in courses:
+		courseObj = {}
+		courseObj['name'] = course.course_name
+		courseArray.append(courseObj)
+	
+	return jsonify({'courses' : courseArray})
+
 
 if __name__ == "__main__":
 	app.run(debug=True)
