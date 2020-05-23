@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html class="" lang="en">
 	<head>
@@ -13,11 +14,30 @@
 		<form method="POST" enctype=multipart/form-data >
 		    {{ form.csrf_token }}
 		    {{ form.sem }}
+		    {{ form.yr }}
 		    {{ form.course }}
 		    {{ form.upload_file }}
 		    <!--input type=file name=files id=files -->
 		    
 		    <input type="submit" value="Submit" >
 		</form>
+		<script type="text/javascript">
+			let sem_choice = document.getElementById('sem');
+			let	course_choice = document.getElementById('course');
+
+			sem_choice.onchange = function() {
+				sem = sem_choice.value;
+
+				fetch('/course/' + sem).then(function(response) {
+					response.json().then(function(data) {
+						let optionHTML = '';
+						for(let course of data.courses) {
+							optionHTML += '<option value="' + course.name + '">' + course.name + '</option>';
+						}
+						course_choice.innerHTML = optionHTML;
+					})
+				})
+			}
+		</script>
 	</body>
 </html>
