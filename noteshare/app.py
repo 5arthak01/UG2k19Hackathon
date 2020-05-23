@@ -1,13 +1,12 @@
-#onlu database inclusion is left as far as Upload is concerned
 import os
 from flask import Flask, flash, request, redirect, url_for, render_template, request, jsonify
 from flask_wtf import FlaskForm
 from wtforms import SelectField, StringField, FileField
-from flask_uploads import UploadSet, configure_uploads, IMAGES, DOCUMENTS, ARCHIVES
+from flask_uploads import UploadSet, configure_uploads, IMAGES, TEXT, DOCUMENTS, ARCHIVES
 
 app = Flask(__name__)
 
-folders = UploadSet('folders', IMAGES + ARCHIVES + DOCUMENTS, default_dest=lambda x: 'storage/misc')
+folders = UploadSet('folders', ('pdf',) + TEXT + IMAGES + ARCHIVES + DOCUMENTS, default_dest=lambda x: 'storage/misc')
 
 app.config['UPLOAD_FOLDER'] =  './'
 configure_uploads(app, folders)
