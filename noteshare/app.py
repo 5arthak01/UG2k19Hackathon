@@ -62,12 +62,13 @@ def browse():
 		courses_in_yr = os.listdir(file_path + '/' +each_yr) 
 		for each_course in courses_in_yr:
 			dirs.append([each_yr, each_course])
-
+	counter = 1
 	for each_dir in dirs:
 		all_files = os.listdir(file_path + '/' + each_dir[0] + '/' + each_dir[1]) #list of files in second tier dir
 		xxtencion =  each_dir[0] + '/' + each_dir[1]
 		for each_file in all_files:
-			retdiv.append( ( each_dir[0], each_dir[1] ,str(url_for('browse') + '/' + xxtencion+ '/' +each_file), each_file) )
+			retdiv.append( ( each_dir[0], each_dir[1] ,str(url_for('browse') + '/' + xxtencion+ '/' +each_file), each_file, counter) )
+			counter+=1
 
 	return render_template('browse.html', filelist=retdiv)#, form=form
 
