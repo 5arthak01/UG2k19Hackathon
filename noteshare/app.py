@@ -1,12 +1,14 @@
 import os
-from flask import Flask, flash, request, redirect, url_for, render_template, request, jsonify, send_from_directory, abort
+from flask import Flask, flash, request, redirect, url_for, render_template, request, jsonify
 from flask_wtf import FlaskForm
 from flask_sqlalchemy import SQLAlchemy
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms import SelectField, StringField, FileField
 from flask_uploads import UploadSet, configure_uploads, IMAGES, TEXT, DOCUMENTS, ARCHIVES
+from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
+Bootstrap(app)
 
 folders = UploadSet('folders', ('pdf',) + TEXT + IMAGES + ARCHIVES + DOCUMENTS, default_dest=lambda x: 'storage/misc')
 
@@ -22,13 +24,13 @@ db = SQLAlchemy(app)
 
 class Courses(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
-	sem_id = db.Column(db.String(20), nullable=False) # M19 redundant
+	sem_id = db.Column(db.String(20), nullable=False) # M19 Might be redundant
 	sem_name = db.Column(db.String(80)) # Monsoon19
-	course_id = db.Column(db.String(20)) #DSA redundant
+	course_id = db.Column(db.String(20)) #DSA Might be redundant
 	course_name = db.Column(db.String(80)) #Data Str and Algo
 
 class CourseForm(FlaskForm):
-	sem = SelectField('Year', choices=[(sem[0],sem[0]) for sem in sorted(set(Courses.query.with_entities(Courses.sem_name))) ] )
+	sem = SelectField('Year', choices=[(sem[0],sem[0]) for sem in sorted(set(Courses.query.with_entities(Courses.sem_name)), reverse=True) ] )
 	course = SelectField('Course', choices=[])
 	info = SelectField('Info', choices=[('Notes','Notes'), ('End-sem', 'End-sem'), ('Mid-sem', 'Mid-sem'), ('Quiz', 'Quiz'), ('Miscellaneous', 'Miscellaneous')])
 	upload_file = FileField()
@@ -40,7 +42,7 @@ def home():
 @app.route('/upload', methods = ['GET', 'POST'])
 def upload():
 	form = CourseForm()
-	form.course.choices = [ (course.course_name, course.course_name) for course in Courses.query.filter_by(sem_name='Monsoon19').all() ]
+	form.course.choices = [ (course.course_name, course.course_name) for course in Courses.query.filter_by(sem_name='Spring20').all() ]
 
 	if form.validate_on_submit():
 
@@ -59,7 +61,7 @@ def upload():
 @app.route('/browse', methods = ['GET', 'POST'])
 def browse():
 	form = CourseForm()
-	form.course.choices = [ (course.course_name, course.course_name) for course in Courses.query.filter_by(sem_name='Monsoon19').all() ]
+	form.course.choices = [ (course.course_name, course.course_name) for course in Courses.query.filter_by(sem_name='Spring20').all() ]
 
 	retdiv = []
 
@@ -86,6 +88,7 @@ def filedisp(sem, course, filename):
 	except FileNotFoundError:
 		abort(404)
 
+
 @app.route('/course/<sem>')
 def course(sem):
 	courses = Courses.query.filter_by(sem_name=sem).all()
@@ -98,6 +101,7 @@ def course(sem):
 		courseArray.append(courseObj)
 	
 	return jsonify({'courses' : courseArray})
+
 
 if __name__ == "__main__":
 	app.run(debug=True)
