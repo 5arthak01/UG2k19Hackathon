@@ -1,5 +1,5 @@
 import os
-from flask import Flask, flash, request, redirect, url_for, render_template, request, jsonify
+from flask import Flask, flash, request, redirect, url_for, render_template, request, jsonify, send_from_directory, abort
 from flask_wtf import FlaskForm
 from flask_sqlalchemy import SQLAlchemy
 from wtforms_sqlalchemy.fields import QuerySelectField
@@ -22,15 +22,19 @@ db = SQLAlchemy(app)
 
 class Courses(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
-	sem_id = db.Column(db.String(20), nullable=False) # M19 Might be redundant
+	sem_id = db.Column(db.String(20), nullable=False) # M19 redundant
 	sem_name = db.Column(db.String(80)) # Monsoon19
-	course_id = db.Column(db.String(20)) #DSA Might be redundant
+	course_id = db.Column(db.String(20)) #DSA redundant
 	course_name = db.Column(db.String(80)) #Data Str and Algo
 
 class CourseForm(FlaskForm):
 	sem = SelectField('Year', choices=[(sem[0],sem[0]) for sem in set(Courses.query.with_entities(Courses.sem_name))])
 	course = SelectField('Course', choices=[(course[0],course[0]) for course in set(Courses.query.with_entities(Courses.course_name))])
 	upload_file = FileField()
+
+@app.route('/', methods=['GET', 'POST'])
+def home():
+	redirect(url_for('browse'))
 
 @app.route('/upload', methods = ['GET', 'POST'])
 def upload():
@@ -46,8 +50,7 @@ def upload():
 
 		flash("Saved!")
 
-	else:
-		flash("ERROR")
+#		flash("ERROR")
 
 	# form.course.choices = [ () for course in Courses.query.filter_by(sem=form.sem).all() ]
 	# for dynamic forms
@@ -56,8 +59,37 @@ def upload():
 
 @app.route('/browse', methods = ['GET', 'POST'])
 def browse():
-	pass
+	form = CourseForm()
 
+	retdiv = []
+
+	if form.validate_on_submit():
+
+		# customise file path in local directory according to the data entered
+		xxtencion =  str(form.sem.data) + '/' + str(form.course.data)
+		file_path = os.getcwd() +'/storage/' + xxtencion
+
+		files = os.listdir(file_path)
+
+		for each_file in files:
+			
+			retdiv.append( ( str(url_for('browse') + '/' + xxtencion+ '/' +each_file), each_file) )
+
+	# form.course.choices = [ () for course in Courses.query.filter_by(sem=form.sem).all() ]
+	# for dynamic forms
+
+	print(retdiv)
+
+	return render_template('browse.html', form=form, filelist=retdiv)
+
+@app.route('/browse/<sem>/<course>/<filename>', methods = ['GET', 'POST'])
+def filedisp(sem, course, filename):
+	try:
+		xxtencion = '/storage/' + sem + '/' + course
+		file_path = os.getcwd() + xxtencion
+		return send_from_directory(file_path, filename)
+	except FileNotFoundError:
+		abort(404)
 
 @app.route('/course/<sem>')
 def course(sem):
