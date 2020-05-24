@@ -23,15 +23,14 @@
 		</form>
 
 		<div>
+			<ul>
 			{% for files in filelist %}
-			<a href= " {{ files[0] }} "> {{ files[1] }} </a>
-			
+			<li> <a href= " {{ files[0] }} "> {{ files[1] }} </a> </li>
 			{% endfor %}
+			</ul>
 		</div>
 
-		<div>
-		{{ div }}
-		</div>
+		<script src="{{ url_for('static', filename='dynamic_form.js') }}" type="text/javascript"></script>
 
 	</body>
 </html>
