@@ -36,11 +36,11 @@
 		</nav>
 		<h1>Select the appropriate course</h1>
 
-		<h2> Plese click to upload </h2>
+		<h2> Please click to upload </h2>
 		<script type = "text/javascript">
 		begin = function()
 		{	
-		let sem = "Spring20";
+		let sem = "2021 Monsoon";
 		let	course_choice = document.getElementById('course');
 		fetch('/course/' + sem).then(function(response) {
 		response.json().then(function(data) {
