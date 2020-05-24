@@ -75,11 +75,6 @@ def browse():
 			
 			retdiv.append( ( str(url_for('browse') + '/' + xxtencion+ '/' +each_file), each_file) )
 
-	# form.course.choices = [ () for course in Courses.query.filter_by(sem=form.sem).all() ]
-	# for dynamic forms
-
-	print(retdiv)
-
 	return render_template('browse.html', form=form, filelist=retdiv)
 
 @app.route('/browse/<sem>/<course>/<filename>', methods = ['GET', 'POST'])
