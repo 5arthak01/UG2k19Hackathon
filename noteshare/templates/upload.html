@@ -38,8 +38,30 @@
 		    </div>
 		</nav>
 		<h1>Select the appropriate course</h1>
-		
-		<form method="POST" enctype=multipart/form-data >
+
+		<h2> Plese click to upload </h2>
+		<script type = "text/javascript">
+		begin = function()
+		{	
+		let sem = "Spring20";
+		let	course_choice = document.getElementById('course');
+		fetch('/course/' + sem).then(function(response) {
+		response.json().then(function(data) {
+			let optionHTML = '';
+			for(let course of data.courses) {
+				optionHTML += '<option value="' + course.name + '">' + course.name + '</option>';
+			}
+			course_choice.innerHTML = optionHTML;
+		})
+	})
+
+}
+	window.onload = begin();
+		</script>
+
+<button onclick="begin()" name="trigger" class="Primary"> Upload </button>
+
+		<form method="POST" enctype=multipart/form-data >	
 		    {{ form.csrf_token }}
 		    {{ form.sem }}
 		    {{ form.course }}
