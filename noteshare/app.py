@@ -28,8 +28,9 @@ class Courses(db.Model):
 	course_name = db.Column(db.String(80)) #Data Str and Algo
 
 class CourseForm(FlaskForm):
-	sem = SelectField('Year', choices=[(sem[0],sem[0]) for sem in set(Courses.query.with_entities(Courses.sem_name))])
-	course = SelectField('Course', choices=[(course[0],course[0]) for course in set(Courses.query.with_entities(Courses.course_name))])
+	sem = SelectField('Year', choices=[(sem[0],sem[0]) for sem in sorted(set(Courses.query.with_entities(Courses.sem_name))) ] )
+	course = SelectField('Course', choices=[])
+	info = SelectField('Info', choices=[('Notes','Notes'), ('End-sem', 'End-sem'), ('Mid-sem', 'Mid-sem'), ('Quiz', 'Quiz'), ('Miscellaneous', 'Miscellaneous')])
 	upload_file = FileField()
 
 @app.route('/', methods=['GET', 'POST'])
@@ -39,6 +40,7 @@ def home():
 @app.route('/upload', methods = ['GET', 'POST'])
 def upload():
 	form = CourseForm()
+	form.course.choices = [ (course.course_name, course.course_name) for course in Courses.query.filter_by(sem_name='Monsoon19').all() ]
 
 	if form.validate_on_submit():
 
@@ -51,15 +53,13 @@ def upload():
 		flash("Saved!")
 
 #		flash("ERROR")
-
-	# form.course.choices = [ () for course in Courses.query.filter_by(sem=form.sem).all() ]
-	# for dynamic forms
-
+	
 	return render_template('upload.html', form=form)
 
 @app.route('/browse', methods = ['GET', 'POST'])
 def browse():
 	form = CourseForm()
+	form.course.choices = [ (course.course_name, course.course_name) for course in Courses.query.filter_by(sem_name='Monsoon19').all() ]
 
 	retdiv = []
 
