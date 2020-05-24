@@ -35,10 +35,6 @@ class CourseForm(FlaskForm):
 	info = SelectField('Info', choices=[('Notes','Notes'), ('End-sem', 'End-sem'), ('Mid-sem', 'Mid-sem'), ('Quiz', 'Quiz'), ('Miscellaneous', 'Miscellaneous')])
 	upload_file = FileField()
 
-@app.route('/', methods=['GET', 'POST'])
-def home():
-	redirect(url_for('browse'))
-
 @app.route('/upload', methods = ['GET', 'POST'])
 def upload():
 	form = CourseForm()
@@ -58,6 +54,8 @@ def upload():
 	
 	return render_template('upload.html', form=form)
 
+
+@app.route('/', methods=['GET', 'POST'])
 @app.route('/browse', methods = ['GET', 'POST'])
 def browse():
 	form = CourseForm()
