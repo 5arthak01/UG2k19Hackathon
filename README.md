@@ -3,4 +3,4 @@ This is the repo for my hackathon team.
 
 It contains all the projects we discussed/ tried out.
 
-Noteshare is our final submission
+[NoteShare](NoteShare) is our final submission
