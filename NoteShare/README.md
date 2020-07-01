@@ -46,10 +46,6 @@ Flask-Bootstrap
 ```
 pip install Flask-Bootstrap
 ```
-MDBootstrap
-Refer:
-https://mdbootstrap.com/docs/jquery/getting-started/download/
-Note- the free install is sufficient for this app.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
