@@ -1,44 +1,12 @@
 {% extends "base.html" %}
 
-{% import "bootstrap/wtf.html" as wtf %}
-
 {% block title %}
 	Upload
 {% endblock %}
 
-{% block content %}
-<!-- <button onclick="begin()" name="trigger" class="Primary"> Upload </button> -->
-<div class="container">
-	<br><br>
-
-	<form class="form form-horizontal" role="form" method="POST" enctype=multipart/form-data >	
-		<!-- {{ form.csrf_token }}
-		{{ form.sem }}
-		{{ form.course }}
-		{{ form.upload_file }} -->
-		<!--input type=file name=files id=files -->
-		{{ form.csrf_token }}
-		{{ wtf.form_field(form.sem) }}
-		{{ wtf.form_field(form.course) }}
-		{{ wtf.form_field(form.upload_file) }}
-		<input type="submit" value="Submit" >
-	</form>	
-
-	{% for message in get_flashed_messages() %}
-	<ul class="flashes">
-		<li>{{ message }}</li>
-	</ul>		
-	{% endfor %}
-
-	<!-- <button onclick="check_val()">Check value</button> -->
-</div>
-{% endblock %}
-
-{{ super() }}
+{% block scripts %}
 <script type="text/javascript">
 function load_courses() {
-	console.log("load_courses was called");
-
 	let sem_choice = document.getElementById('sem');
 	let	course_choice = document.getElementById('course');
 
@@ -54,7 +22,29 @@ function load_courses() {
 		})
 	})
 }
-
-let sem_choice = document.getElementById('sem');
-sem_choice.onchange = load_courses();
 </script>
+
+{{ super() }}
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	<br><br>
+
+	<form class="form form-horizontal" role="form" method="POST" enctype=multipart/form-data >	
+		{{ form.csrf_token }}
+		{{ wtf.form_field(form.sem, onclick="load_courses()") }}
+		{{ wtf.form_field(form.course) }}
+		{{ wtf.form_field(form.upload_file) }}
+		<input type="submit" value="Submit" >
+	</form>	
+
+	{% for message in get_flashed_messages() %}
+	<ul class="flashes">
+		<li>{{ message }}</li>
+	</ul>		
+	{% endfor %}
+
+</div>
+{% endblock %}
