@@ -44,20 +44,16 @@ def upload():
 
 		flash("Saved!")
 
-#		flash("ERROR")
-	
 	return render_template('upload.html', form=form)
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/browse', methods = ['GET', 'POST'])
 def browse():
 	retdiv = []
-		
 	file_path = os.getcwd() +'/storage/'
-
 	filedirs = os.listdir(file_path) #access all year dirs
+	dirs=[] # list of [year,course] pairs
 
-	dirs=[]
 	for each_yr in filedirs: #access all course dirs
 		courses_in_yr = os.listdir(file_path + '/' +each_yr) 
 		for each_course in courses_in_yr:
@@ -65,12 +61,22 @@ def browse():
 	counter = 1
 	for each_dir in dirs:
 		all_files = os.listdir(file_path + '/' + each_dir[0] + '/' + each_dir[1]) #list of files in second tier dir
-		xxtencion =  each_dir[0] + '/' + each_dir[1]
+		relative_course_path =  each_dir[0] + '/' + each_dir[1]
 		for each_file in all_files:
-			retdiv.append( ( each_dir[0], each_dir[1] ,str(url_for('browse') + '/' + xxtencion+ '/' +each_file), each_file, counter) )
+			retdiv.append( ( each_dir[0], each_dir[1] ,str(url_for('browse') + '/' + relative_course_path+ '/' +each_file), each_file, counter) )
 			counter+=1
+	
+	if request.method == 'POST':
+		search_query = request.form['Search'].lower()
 
-	return render_template('browse.html', filelist=retdiv)#, form=form
+		modified = []
+		for entry in retdiv:
+			if search_query in entry[2].lower():
+				modified.append(entry)
+		retdiv = modified
+		return render_template('browse.html', filelist=retdiv, search_query=search_query)
+
+	return render_template('browse.html', filelist=retdiv, search_query="")
 
 @app.route('/browse/<sem>/<course>/<filename>', methods = ['GET', 'POST'])
 def filedisp(sem, course, filename):
@@ -80,8 +86,6 @@ def filedisp(sem, course, filename):
 		return send_from_directory(file_path, filename)
 	except FileNotFoundError:
 		abort(404)
-
-
 
 @app.route('/course/<sem>')
 def course(sem):
