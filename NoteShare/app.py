@@ -27,28 +27,22 @@ class Courses(db.Model):
 	course_name = db.Column(db.String(80)) #Data Str and Algo
 
 class CourseForm(FlaskForm):
-	sem = SelectField('Year', choices=[(sem[0],sem[0]) for sem in sorted(set(Courses.query.with_entities(Courses.sem_name)), reverse=True) ] )
+	sem = SelectField('Semester', choices=[(sem[0],sem[0]) for sem in sorted(set(Courses.query.with_entities(Courses.sem_name)), reverse=True) ] )
 	course = SelectField('Course', choices=[(course[0],course[0]) for course in set(Courses.query.with_entities(Courses.course_name))])
 	upload_file = FileField()
 
+class SemForm(FlaskForm):
+	sem = SelectField('Semester', choices=[('Semester', 'Semester')] + [(sem[0],sem[0]) for sem in sorted(set(Courses.query.with_entities(Courses.sem_name)), reverse=True) ] )
 
-@app.route('/upload', methods = ['GET', 'POST'])
-def upload():
-	form = CourseForm()
-	if form.validate_on_submit():
-		# customise file path in local directory according to the data entered
-		file_path = '../'+ str(form.sem.data) + '/' + str(form.course.data)
-
-		#store the file
-		file_name = folders.save(form.upload_file.data, folder=file_path)
-
-		flash("Saved!")
-
-	return render_template('upload.html', form=form)
+class CourseForm(FlaskForm):
+	course = SelectField('Course', choices=[('Course', 'Course')] + [(course[0],course[0]) for course in set(Courses.query.with_entities(Courses.course_name))])
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/browse', methods = ['GET', 'POST'])
 def browse():
+	sem_form = SemForm()
+	course_form = CourseForm()
+
 	retdiv = []
 	file_path = os.getcwd() +'/storage/'
 	filedirs = os.listdir(file_path) #access all year dirs
@@ -74,9 +68,24 @@ def browse():
 			if search_query in entry[2].lower():
 				modified.append(entry)
 		retdiv = modified
-		return render_template('browse.html', filelist=retdiv, search_query=search_query)
 
-	return render_template('browse.html', filelist=retdiv, search_query="")
+		return render_template('browse.html', filelist=retdiv, search_query=search_query, sem_form=sem_form, course_form=course_form)
+
+	return render_template('browse.html', filelist=retdiv, search_query="", sem_form=sem_form, course_form=course_form)
+
+@app.route('/upload', methods = ['GET', 'POST'])
+def upload():
+	form = CourseForm()
+	if form.validate_on_submit():
+		# customise file path in local directory according to the data entered
+		file_path = '../'+ str(form.sem.data) + '/' + str(form.course.data)
+
+		#store the file
+		file_name = folders.save(form.upload_file.data, folder=file_path)
+
+		flash("Saved!")
+
+	return render_template('upload.html', form=form)
 
 @app.route('/browse/<sem>/<course>/<filename>', methods = ['GET', 'POST'])
 def filedisp(sem, course, filename):
