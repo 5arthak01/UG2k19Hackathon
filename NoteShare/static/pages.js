@@ -11,8 +11,6 @@ while(document.getElementById(String(total)) != null)
 }
 total--;
 
-console.log(total);
-
 let j = 1;
 
 while(j <= total)

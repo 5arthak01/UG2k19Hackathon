@@ -1,24 +1,21 @@
 import os
 from flask import Flask, flash, request, redirect, url_for, render_template, request, jsonify, send_from_directory, abort
-from flask_wtf import FlaskForm
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import FlaskForm
 from wtforms import SelectField, StringField, FileField, SubmitField
 from flask_uploads import UploadSet, configure_uploads, IMAGES, TEXT, DOCUMENTS, ARCHIVES
+from werkzeug.utils import secure_filename
 from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
-Bootstrap(app)
-
 folders = UploadSet('folders', ('pdf',) + TEXT + IMAGES + ARCHIVES + DOCUMENTS, default_dest=lambda x: 'storage/misc')
-
 app.config['UPLOAD_FOLDER'] =  './'
-configure_uploads(app, folders)
-
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 #maximum size of the file
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db/finaldb.sqlite'
 app.config['SECRET_KEY'] = 'secret'
-
+Bootstrap(app)
+configure_uploads(app, folders)
 db = SQLAlchemy(app)
 
 class Courses(db.Model):
@@ -100,7 +97,7 @@ def upload():
 		#store the file
 		file_name = folders.save(form.upload_file.data, folder=file_path)
 
-		flash("Saved!")
+		flash("Saved")
 
 	return render_template('upload.html', form=form)
 
@@ -115,17 +112,17 @@ def filedisp(sem, course, filename):
 
 @app.route('/course/<sem>')
 def course(sem):
-	courses = Courses.query.filter_by(sem_name=sem).all()
+	course_list = []
 
-	courseArray = []
-
-	for course in courses:
-		courseObj = {}
-		courseObj['name'] = course.course_name
-		courseArray.append(courseObj)
+	if sem!='Any':
+		courses = Courses.query.filter_by(sem_name=sem).all()
+	else:
+		courses = Courses.query.with_entities(Courses.course_name)
 	
-	return jsonify({'courses' : courseArray})
-
+	for course in courses:
+		course_list.append({'name' : course.course_name})
+	
+	return jsonify({'courses' : course_list})
 
 if __name__ == "__main__":
 	app.run(debug=True)
