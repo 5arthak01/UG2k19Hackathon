@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}
+	Home
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <br><br>
+	<h1 style="text-align:center">Welcome to NoteShare!</h1>
+    <br><br>
+    
+    <p>NoteShare is a notes sharing and QP archive web-app. Allows images, text files, archives and PDFs as uploads and stores them. A simple, easy-to-use solution to repetitive, redundant requests for notes and previous year papers on whatsapp groups.</p>
+    <br>
+    <p>Flask based back-end and powered by JavaScript at front-end. Bootstrap used with HTML5 for beautiful, responsive UI.</p>
+
+    <br><br>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="../static/dynamic_form.js" type = "text/javascript"></script>
+{{ super() }}
+{% endblock %}

@@ -36,6 +36,9 @@ class SearchForm(FlaskForm):
 	submit_query = SubmitField('Submit')
 
 @app.route('/', methods=['GET', 'POST'])
+def home():
+	return render_template('index.html')
+
 @app.route('/browse', methods = ['GET', 'POST'])
 def browse():
 	search_form = SearchForm()
