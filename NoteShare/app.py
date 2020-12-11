@@ -2,7 +2,7 @@ import os
 from flask import Flask, flash, request, redirect, url_for, render_template, request, jsonify, send_from_directory, abort
 from flask_wtf import FlaskForm
 from flask_sqlalchemy import SQLAlchemy
-from wtforms import SelectField, StringField, FileField
+from wtforms import SelectField, StringField, FileField, SubmitField
 from flask_uploads import UploadSet, configure_uploads, IMAGES, TEXT, DOCUMENTS, ARCHIVES
 from flask_bootstrap import Bootstrap
 
@@ -30,7 +30,65 @@ class CourseForm(FlaskForm):
 	sem = SelectField('Year', choices=[(sem[0],sem[0]) for sem in sorted(set(Courses.query.with_entities(Courses.sem_name)), reverse=True) ] )
 	course = SelectField('Course', choices=[(course[0],course[0]) for course in set(Courses.query.with_entities(Courses.course_name))])
 	upload_file = FileField()
+	submit_form = SubmitField('Upload')
 
+class SearchForm(FlaskForm):
+	sem = SelectField('Semester', choices=[('Any', 'Any')] + [(sem[0],sem[0]) for sem in sorted(set(Courses.query.with_entities(Courses.sem_name)), reverse=True) ] )
+	course = SelectField('Course', choices=[('Any', 'Any')] + [(course[0],course[0]) for course in set(Courses.query.with_entities(Courses.course_name))])
+	search_query = StringField()
+	submit_query = SubmitField('Submit')
+
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/browse', methods = ['GET', 'POST'])
+def browse():
+	search_form = SearchForm()
+	sem = 'Any'
+	course = 'Any'
+	search_query = ''
+	if search_form.validate_on_submit():
+		sem = search_form.sem.data 
+		course = search_form.course.data
+		search_query = search_form.search_query.data.lower()
+
+	file_list = []
+	file_path = os.getcwd() +'/storage/'
+	filedirs = os.listdir(file_path) # access all semester dirs
+	dirs=[] # list of [sem,course] pairs
+
+	if sem != 'Any':
+		courses_in_sem = os.listdir(file_path + '/' +sem) 
+		if course == 'Any':
+			for each_course in courses_in_sem:
+				dirs.append([sem, each_course])
+		elif course in courses_in_sem:
+			dirs.append([sem, course])			
+	else:
+		for each_sem in filedirs: # access course dirs for all sem
+			courses_in_sem = os.listdir(file_path + '/' +each_sem)
+			if course == 'Any':
+				for each_course in courses_in_sem:
+					dirs.append([each_sem, each_course])
+			elif course in courses_in_sem:
+				dirs.append([each_sem, course])	
+
+	counter = 1
+	for each_dir in dirs:
+		all_files = os.listdir(file_path + '/' + each_dir[0] + '/' + each_dir[1]) #list of files in second tier dir
+		relative_course_path =  each_dir[0] + '/' + each_dir[1]
+		for each_file in all_files:
+			file_list.append( ( each_dir[0], each_dir[1] ,(url_for('browse') + '/' + relative_course_path+ '/' +each_file), each_file, counter) )
+			counter+=1
+
+	if search_query != '':
+		modified = []
+		for entry in file_list:
+			if search_query in entry[3].lower():
+				modified.append(entry)
+		file_list = modified
+	
+	selected_form=[sem, course, search_query]
+
+	return render_template('browse.html', filelist=file_list, search_form=search_form, selections=search_form)
 
 @app.route('/upload', methods = ['GET', 'POST'])
 def upload():
@@ -46,43 +104,11 @@ def upload():
 
 	return render_template('upload.html', form=form)
 
-@app.route('/', methods=['GET', 'POST'])
-@app.route('/browse', methods = ['GET', 'POST'])
-def browse():
-	retdiv = []
-	file_path = os.getcwd() +'/storage/'
-	filedirs = os.listdir(file_path) #access all year dirs
-	dirs=[] # list of [year,course] pairs
-
-	for each_yr in filedirs: #access all course dirs
-		courses_in_yr = os.listdir(file_path + '/' +each_yr) 
-		for each_course in courses_in_yr:
-			dirs.append([each_yr, each_course])
-	counter = 1
-	for each_dir in dirs:
-		all_files = os.listdir(file_path + '/' + each_dir[0] + '/' + each_dir[1]) #list of files in second tier dir
-		relative_course_path =  each_dir[0] + '/' + each_dir[1]
-		for each_file in all_files:
-			retdiv.append( ( each_dir[0], each_dir[1] ,str(url_for('browse') + '/' + relative_course_path+ '/' +each_file), each_file, counter) )
-			counter+=1
-	
-	if request.method == 'POST':
-		search_query = request.form['Search'].lower()
-
-		modified = []
-		for entry in retdiv:
-			if search_query in entry[2].lower():
-				modified.append(entry)
-		retdiv = modified
-		return render_template('browse.html', filelist=retdiv, search_query=search_query)
-
-	return render_template('browse.html', filelist=retdiv, search_query="")
-
 @app.route('/browse/<sem>/<course>/<filename>', methods = ['GET', 'POST'])
 def filedisp(sem, course, filename):
 	try:
-		xxtencion = '/storage/' + sem + '/' + course
-		file_path = os.getcwd() + xxtencion
+		path_extention = '/storage/' + sem + '/' + course
+		file_path = os.getcwd() + path_extention
 		return send_from_directory(file_path, filename)
 	except FileNotFoundError:
 		abort(404)

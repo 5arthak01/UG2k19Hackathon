@@ -37,7 +37,8 @@ function load_courses() {
 		{{ wtf.form_field(form.sem, onclick="load_courses()") }}
 		{{ wtf.form_field(form.course) }}
 		{{ wtf.form_field(form.upload_file) }}
-		<input type="submit" value="Submit" >
+		{{ wtf.form_field(form.submit_form) }}
+		<!-- <input type="submit" value="Submit" > -->
 	</form>	
 
 	{% for message in get_flashed_messages() %}
