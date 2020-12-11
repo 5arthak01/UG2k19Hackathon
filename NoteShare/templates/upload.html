@@ -18,10 +18,9 @@
 		{{ wtf.form_field(form.submit_form) }}
 	</form>	
 
+	<br><br>
 	{% for message in get_flashed_messages() %}
-	<ul class="flashes">
-		<li>{{ message }}</li>
-	</ul>		
+		<h3>{{ message }}</h3>
 	{% endfor %}
 
 	<br><br>
