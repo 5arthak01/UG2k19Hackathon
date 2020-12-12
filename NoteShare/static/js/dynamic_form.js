@@ -17,5 +17,3 @@ function load_courses() {
         })
     })
 }
-
-window.onload=load_courses();

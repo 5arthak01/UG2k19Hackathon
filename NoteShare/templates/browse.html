@@ -65,7 +65,13 @@
 	<!-- Pagination -->
 	<button id="prev_button" type="button" class="btn btn-primary">prev</button>
 	<button id="next_button" type="button" class="btn btn-primary">next</button>  
+	<br><br>
 	
+	<h3>Number of entries per page</h3>
+	<button type="button" class="btn btn-primary" onclick="re_tabulate(5)">5</button>
+	<button type="button" class="btn btn-primary" onclick="re_tabulate(10)">10</button>
+	<button type="button" class="btn btn-primary" onclick="re_tabulate(15)">15</button>
+
 	<br><br>
 </div>
 {% endblock %}
@@ -74,5 +80,8 @@
 <script src="{{ url_for('static', filename='js/pages.js') }}" type = "text/javascript"></script>
 <script src="{{ url_for('static', filename='js/dropdown_menu.js') }}" type = "text/javascript"></script>
 <script src="{{ url_for('static', filename='js/dynamic_form.js') }}" type = "text/javascript"></script>
+<script type = "text/javascript">window.onload=function() {load_courses(); initialise_storage(); tabulate();};</script>
+
 {{ super() }}
+
 {% endblock %}
