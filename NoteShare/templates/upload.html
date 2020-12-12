@@ -28,6 +28,6 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="../static/dynamic_form.js" type = "text/javascript"></script>
+<script src="{{ url_for('static', filename='js/dynamic_form.js') }}" type = "text/javascript"></script>
 {{ super() }}
 {% endblock %}

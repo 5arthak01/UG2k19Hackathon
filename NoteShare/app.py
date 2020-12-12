@@ -21,7 +21,7 @@ from flask_uploads import (
     TEXT,
     DOCUMENTS,
     ARCHIVES,
-    UploadNotAllowed
+    UploadNotAllowed,
 )
 from flask_bootstrap import Bootstrap
 
@@ -101,6 +101,13 @@ class SearchForm(FlaskForm):
 @app.route("/index", methods=["GET", "POST"])
 def index():
     return render_template("index.html")
+
+
+@app.route("/favicon.ico")
+def favicon():
+    return send_from_directory(
+        os.getcwd(), "favicon.ico", mimetype="image/vnd.microsoft.icon"
+    )
 
 
 @app.route("/browse", methods=["GET", "POST"])

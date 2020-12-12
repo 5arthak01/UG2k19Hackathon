@@ -6,22 +6,29 @@
 	Browse
 {% endblock %}
 
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/browse-dropdown.css') }}">
+{% endblock %}
+
 {% block content %}
 <div class="container">
 	<br><br>
 
-	<!-- Dropdown button -->
-
 	<!-- Search form -->
-	<h2>Filter</h2>	
-	<form class="form" role="form" method="POST" enctype=multipart/form-data >	
-		{{ search_form.csrf_token }}
-		{{ wtf.form_field(search_form.sem, onclick="load_courses()") }}
-		{{ wtf.form_field(search_form.course) }}
-		{{ wtf.form_field(search_form.search_query, placeholder="Search by file name") }}
-		{{ wtf.form_field(search_form.submit_query) }}
-		<a href="{{ url_for('browse') }}"><button type="button" class="btn btn-light" >Clear</button></a>
-	</form>	
+	<div class="dropdown">
+		<div class="title pointerCursor"><b style="font-family: 'Times New Roman', Times, serif; font-size: large;">Filter</b><i class="fa fa-angle-right"></i></div>
+		<div class="menu pointerCursor hide">
+			<div><form class="form" role="form" method="POST" enctype=multipart/form-data >	
+			{{ search_form.csrf_token }}
+			{{ wtf.form_field(search_form.sem, onclick="load_courses()") }}
+			{{ wtf.form_field(search_form.course) }}
+			{{ wtf.form_field(search_form.search_query, placeholder="Search by file name") }}
+			{{ wtf.form_field(search_form.submit_query) }}
+			<a href="{{ url_for('browse') }}"><button type="button" class="btn btn-light" >Clear</button></a>
+			</form></div>
+		</div>
+	</div>
 
 	<br><hr><br>
 
@@ -36,6 +43,7 @@
 	</p>
 	{% endif %}
 
+	<!-- Display appropriate files -->
 	<table id="display-files" class="table table-responsive-sm table-striped table-bordered table-hover" cellspacing="0" width="100%">
 		<thead class="thead-dark ">
 			<th class="th-sm">Year</th>
@@ -54,6 +62,7 @@
 		</tbody>
 	</table>
 
+	<!-- Pagination -->
 	<button id="prev_button" type="button" class="btn btn-primary">prev</button>
 	<button id="next_button" type="button" class="btn btn-primary">next</button>  
 	
@@ -62,7 +71,8 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="../static/pages.js" type = "text/javascript"></script>
-<script src="../static/dynamic_form.js" type = "text/javascript"></script>
+<script src="{{ url_for('static', filename='js/pages.js') }}" type = "text/javascript"></script>
+<script src="{{ url_for('static', filename='js/dropdown_menu.js') }}" type = "text/javascript"></script>
+<script src="{{ url_for('static', filename='js/dynamic_form.js') }}" type = "text/javascript"></script>
 {{ super() }}
 {% endblock %}

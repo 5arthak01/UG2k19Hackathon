@@ -1,5 +1,4 @@
 function load_courses() {
-    console.log("load");
 	let sem_choice = document.getElementById('sem');
 	let	course_choice = document.getElementById('course');
 
