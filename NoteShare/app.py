@@ -21,6 +21,7 @@ from flask_uploads import (
     TEXT,
     DOCUMENTS,
     ARCHIVES,
+    UploadNotAllowed
 )
 from flask_bootstrap import Bootstrap
 
@@ -97,7 +98,8 @@ class SearchForm(FlaskForm):
 
 
 @app.route("/", methods=["GET", "POST"])
-def home():
+@app.route("/index", methods=["GET", "POST"])
+def index():
     return render_template("index.html")
 
 
@@ -158,13 +160,13 @@ def browse():
                 modified.append(entry)
         file_list = modified
 
-    selected_form = [sem, course, search_query]
+    selected_form = (sem, course, search_query)
 
     return render_template(
         "browse.html",
+        selections=selected_form,
         filelist=file_list,
         search_form=search_form,
-        selections=search_form,
     )
 
 
@@ -175,7 +177,10 @@ def upload():
         # customise file path in local directory according to the data entered
         file_path = "../" + str(form.sem.data) + "/" + str(form.course.data)
         # store the file
-        folders.save(form.upload_file.data, folder=file_path)
+        try:
+            folders.save(form.upload_file.data, folder=file_path)
+        except UploadNotAllowed:
+            flash("Unsuccesful, please retry.")
 
         flash('Saved "' + str(form.upload_file.data.filename) + '"')
 

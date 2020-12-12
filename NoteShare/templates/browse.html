@@ -9,6 +9,7 @@
 {% block content %}
 <div class="container">
 	<br><br>
+
 	<!-- Dropdown button -->
 
 	<!-- Search form -->
@@ -19,19 +20,24 @@
 		{{ wtf.form_field(search_form.course) }}
 		{{ wtf.form_field(search_form.search_query, placeholder="Search by file name") }}
 		{{ wtf.form_field(search_form.submit_query) }}
+		<a href="{{ url_for('browse') }}"><button type="button" class="btn btn-light" >Clear</button></a>
 	</form>	
+
 	<br><hr><br>
 
-	<!--	{% if selections[0] != 'Any' or selections[1] != 'Any' or  selections[2] != ''%}
+	<!-- Show criteria of filters if applied -->
+	{% if selections[0] != 'Any' or selections[1] != 'Any' or  selections[2] != '' %}
 	<p>Showing results for 
-		{% if selections[0] != 'Any' %}Semester {{ selections[0] }}{% endif %} 
-		{% if selections[1] != 'Any' %}Course {{ selections[1] }}{% endif %} 
-		{% if selections[2] != '' %}File "{{ selections[2] }}"{% endif %} 
+		<ul>
+		<li> Semester: {{ selections[0] }} </li>  
+		<li> Course: {{ selections[1] }} </li>
+		<li> File: "{{ selections[2] }}" </li>
+		</ul>
 	</p>
-	{% endif %} -->
+	{% endif %}
 
-	<table id="dtBasicExample" class="table table-responsive-sm table-striped table-bordered" cellspacing="0" width="100%">
-		<thead>
+	<table id="display-files" class="table table-responsive-sm table-striped table-bordered table-hover" cellspacing="0" width="100%">
+		<thead class="thead-dark ">
 			<th class="th-sm">Year</th>
 			<th class="th-sm">Course</th>
 			<th class="th-sm">File</th>		
